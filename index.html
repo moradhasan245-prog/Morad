@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Direct Link Generator</title>
+  <style>
+    body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #f4f4f9; margin: 0; }
+    .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 400px; }
+    input[type="file"] { margin: 15px 0; }
+    button { background: #0070f3; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    .result { margin-top: 20px; word-break: break-all; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>ফাইল আপলোডার</h2>
+    <input type="file" id="fileInput">
+    <br>
+    <button onclick="uploadFile()">আপলোড করুন</button>
+    <div class="result" id="output"></div>
+  </div>
+
+  <script>
+    async function uploadFile() {
+      const fileInput = document.getElementById('fileInput');
+      const output = document.getElementById('output');
+      
+      if (!fileInput.files[0]) {
+        alert('অনুগ্রহ করে একটি ফাইল সিলেক্ট করুন!');
+        return;
+      }
+
+      output.innerText = 'আপলোড হচ্ছে...';
+
+      const formData = new FormData();
+      formData.append('reqtype', 'fileupload');
+      formData.append('userhash', '8905f6a4a51fa31647bdfbd00');
+      formData.append('fileToUpload', fileInput.files[0]);
+
+      try {
+        const response = await fetch('https://catbox.moe/user/api.php', {
+          method: 'POST',
+          body: formData
+        });
+        const url = await response.text();
+        output.innerHTML = 'ডিরেক্ট লিংক: <br><a href="' + url + '" target="_blank">' + url + '</a>';
+      } catch (err) {
+        output.innerText = 'আপলোডে সমস্যা হয়েছে!';
+      }
+    }
+  </script>
+</body>
+</html>
